@@ -246,7 +246,13 @@
         _cell.swipeOffset = 0;
     }
     else if (autoHide) {
-        [_cell hideSwipeAnimated:YES];
+        //
+        __weak MGSwipeTableCell * weakCell = _cell;
+        [_cell setSwipeOffset:0 animated:YES completion:^{
+            [weakCell completeSwipe];
+        }];
+
+
     }
 
 }
@@ -854,6 +860,11 @@ typedef struct MGSwipeAnimationData {
         }
     }
 }
+
+- (void)completeSwipe{
+    
+}
+
 -(void) setSwipeOffset:(CGFloat)offset animated: (BOOL) animated completion:(void(^)()) completion
 {
     _animationCompletion = completion;
