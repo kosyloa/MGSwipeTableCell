@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name     = 'MGSwipeTableCellUpdated'
+  s.name     = 'MGSwipeTableCell'
   s.version  = '1.3.4'
   s.author   = { 'Imanol Fernandez' => 'mortimergoro@gmail.com' }
   s.homepage = 'https://github.com/MortimerGoro/MGSwipeTableCell'
