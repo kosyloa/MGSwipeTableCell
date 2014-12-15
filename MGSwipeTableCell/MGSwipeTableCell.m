@@ -541,8 +541,6 @@ typedef struct MGSwipeAnimationData {
     if (_swipeContentView)
         [_swipeContentView removeFromSuperview];
     _swipeView.image = [self imageFromView:self];
-//    _swipeView.frame = self.bounds;
-    NSLog(@"_swipeView %@",_swipeView);
     _swipeOverlay.hidden = NO;
     if (_swipeContentView)
         [_swipeView addSubview:_swipeContentView];
