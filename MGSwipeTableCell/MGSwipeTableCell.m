@@ -113,6 +113,15 @@
 -(void) layoutSubviews
 {
     [super layoutSubviews];
+    CGRect frame = self.frame;
+    NSInteger height = CGRectGetHeight(frame);
+    CGFloat diff = CGRectGetHeight(frame) - height;
+    if(diff>=.5f) {
+        height += 1;
+        frame.size.height = height;
+        self.frame = frame;
+    }
+
     if (_expandedButton) {
         [self layoutExpansion:_expansionOffset];
     }
@@ -475,8 +484,10 @@ typedef struct MGSwipeAnimationData {
         _swipeContentView.frame = self.contentView.bounds;
     }
     if (_swipeOverlay) {
-        _swipeOverlay.frame = CGRectMake(0, 0, self.bounds.size.width, self.contentView.bounds.size.height);
+        _swipeOverlay.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+
     }
+    
 }
 
 -(void) fetchButtonsIfNeeded
@@ -530,6 +541,8 @@ typedef struct MGSwipeAnimationData {
     if (_swipeContentView)
         [_swipeContentView removeFromSuperview];
     _swipeView.image = [self imageFromView:self];
+//    _swipeView.frame = self.bounds;
+    NSLog(@"_swipeView %@",_swipeView);
     _swipeOverlay.hidden = NO;
     if (_swipeContentView)
         [_swipeView addSubview:_swipeContentView];
@@ -657,6 +670,7 @@ typedef struct MGSwipeAnimationData {
 #pragma mark Some utility methods
 
 - (UIImage *)imageFromView:(UIView *)view {
+    NSLog(@"%@",view);
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, [[UIScreen mainScreen] scale]);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
@@ -874,7 +888,7 @@ typedef struct MGSwipeAnimationData {
 -(void) panHandler: (UIPanGestureRecognizer *)gesture
 {
     CGPoint current = [gesture translationInView:self];
-    
+
     if (gesture.state == UIGestureRecognizerStateBegan) {
         self.highlighted = NO;
         self.selected = NO;
