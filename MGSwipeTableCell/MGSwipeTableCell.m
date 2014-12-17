@@ -674,7 +674,6 @@ typedef struct MGSwipeAnimationData {
 #pragma mark Some utility methods
 
 - (UIImage *)imageFromView:(UIView *)view {
-    NSLog(@"%@",view);
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, [[UIScreen mainScreen] scale]);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
@@ -758,7 +757,7 @@ typedef struct MGSwipeAnimationData {
     
     CGFloat sign = newOffset > 0 ? 1.0 : -1.0;
     CGFloat offset = fabs(newOffset);
-    
+//    NSLog(@"newOffset %f",newOffset);
     MGSwipeButtonsView * activeButtons = sign < 0 ? _rightView : _leftView;
     if (!activeButtons || offset == 0) {
         if (_leftView)
@@ -771,11 +770,12 @@ typedef struct MGSwipeAnimationData {
         return;
     }
     else {
+
         [self showSwipeOverlayIfNeeded];
         CGFloat swipeThreshold = sign < 0 ? _rightSwipeSettings.threshold : _leftSwipeSettings.threshold;
         _targetOffset = offset > activeButtons.bounds.size.width * swipeThreshold ? activeButtons.bounds.size.width * sign : 0;
     }
-    
+
     _swipeView.transform = CGAffineTransformMakeTranslation(newOffset, 0);
     //animate existing buttons
     MGSwipeButtonsView* but[2] = {_leftView, _rightView};
@@ -787,18 +787,31 @@ typedef struct MGSwipeAnimationData {
         if (!view) continue;
 
         //buttons view position
+
         CGFloat translation = MIN(offset, view.bounds.size.width) * sign + settings[i].offset * sign;
+
         view.transform = CGAffineTransformMakeTranslation(translation, 0);
+
 
         if (view != activeButtons) continue; //only transition if active (perf. improvement)
         bool expand = expansions[i].buttonIndex >= 0 && offset > view.bounds.size.width * expansions[i].threshold;
+        
         if (expand) {
+            NSLog(@"expand %f",offset);
+            if(offset < view.bounds.size.width * (1.6f *expansions[i].threshold)) {
+                NSLog(@"ups");
+                return;
+            }
+
             [view expandToOffset:offset button:expansions[i].buttonIndex];
             _targetOffset = expansions[i].fillOnTrigger ? self.contentView.bounds.size.width * sign : 0;
             _activeExpansion = view;
             [self updateState:i ? MGSwipeStateExpandingRightToLeft : MGSwipeStateExpandingLeftToRight];
         }
         else {
+
+            NSLog(@"notexpand");
+
             [view endExpansioAnimated:YES];
             _activeExpansion = nil;
             CGFloat t = MIN(1.0f, offset/view.bounds.size.width);
@@ -973,6 +986,8 @@ typedef struct MGSwipeAnimationData {
         CGPoint point = [_tapRecognizer locationInView:_swipeView];
         return CGRectContainsPoint(_swipeView.bounds, point);
     }
+
+
     return YES;
 }
 
