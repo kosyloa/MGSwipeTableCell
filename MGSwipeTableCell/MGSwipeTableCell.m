@@ -757,7 +757,6 @@ typedef struct MGSwipeAnimationData {
     
     CGFloat sign = newOffset > 0 ? 1.0 : -1.0;
     CGFloat offset = fabs(newOffset);
-//    NSLog(@"newOffset %f",newOffset);
     MGSwipeButtonsView * activeButtons = sign < 0 ? _rightView : _leftView;
     if (!activeButtons || offset == 0) {
         if (_leftView)
@@ -797,9 +796,7 @@ typedef struct MGSwipeAnimationData {
         bool expand = expansions[i].buttonIndex >= 0 && offset > view.bounds.size.width * expansions[i].threshold;
         
         if (expand) {
-            NSLog(@"expand %f",offset);
             if(offset < view.bounds.size.width * (1.6f *expansions[i].threshold)) {
-                NSLog(@"ups");
                 return;
             }
 
@@ -809,9 +806,6 @@ typedef struct MGSwipeAnimationData {
             [self updateState:i ? MGSwipeStateExpandingRightToLeft : MGSwipeStateExpandingLeftToRight];
         }
         else {
-
-            NSLog(@"notexpand");
-
             [view endExpansioAnimated:YES];
             _activeExpansion = nil;
             CGFloat t = MIN(1.0f, offset/view.bounds.size.width);
